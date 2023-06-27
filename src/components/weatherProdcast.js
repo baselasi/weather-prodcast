@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Weather(props){
     const [weather,setWeather] = useState();
@@ -8,7 +9,7 @@ export default function Weather(props){
    
    
     function toCelsius(temp){
-        return temp-273.5
+        return  Math.trunc(temp-273.5)
     }
     //const url = `https://api.openweathermap.org/data/2.5/weather?lat=${props.city[1]}&lon=${props.city[2]}&appid=7c47bc055a3d35204ebb00585919b3a3`
     const ProdcastApi=`https://api.openweathermap.org/data/2.5/forecast?lat=${props.city[1]}&lon=${props.city[2]}&appid=7c47bc055a3d35204ebb00585919b3a3`
@@ -34,6 +35,15 @@ export default function Weather(props){
     function toHour(string){
         return string.slice(10,16)
     }
+    function findNextDay(array){
+        const today=
+        array.map()
+    }
+    const navigate = useNavigate()
+    function changeRoute(){
+        navigate('/weatherProdcas/fiveDaysProdcast')
+        props.Prodcast(prodcast.list)
+    }
     if(prodcast.list !==undefined){
         let firstDayWeather = prodcast.list.slice(0,8)
         console.log(firstDayWeather)
@@ -54,13 +64,13 @@ export default function Weather(props){
                 <div>{firstDayWeather.map((el)=>{
                     return (
                     <div>
-                        <span>{el.main.temp}</span><span>img</span><span>{toHour(el.dt_txt)}</span>
+                        <span>{toCelsius(el.main.temp)}</span><span>img</span><span>{toHour(el.dt_txt)}</span>
                     </div>
                 
                 )}
 
                 )}</div>
-                <div>{ prodcast.cnt }</div>
+                <div><button onClick={changeRoute}>5 DAYS PRODACST</button></div>
             </div>
         )
     }
