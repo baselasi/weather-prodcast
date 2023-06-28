@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 const url = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities';
 const options = {
 	method: 'GET',
@@ -17,14 +16,12 @@ export default function SerchBar(props){
             fetch(`${url}?namePrefix=${e}`, options)
                 .then(response => response.json())
                 .then(response => setResult(response))
-                .then(console.log(result))
                 .catch ( err => console.error(err));
                 
     }
     const navigate = useNavigate()
     function changeRoute(el){
-        console.log(result)
-        navigate('/weatherProdcast')
+        navigate('/weatherProdcas')
         props.setCity([el.city,el.latitude,el.longitude])
     }
     return(
@@ -34,7 +31,7 @@ export default function SerchBar(props){
                 <button onClick={SerchCity}>SERCH</button>
             </div>
             <div>
-                {result !==undefined ? result.data.map((element)=><div onClick={()=>changeRoute(element)}><h2>{element.city}</h2><h3>{element.country}</h3><h4>{element.region}</h4></div>) : ""}
+                {result !==undefined ? result.data.map((element)=><div key={element.id} onClick={()=>changeRoute(element)}><h2>{element.city}</h2><h3>{element.country}</h3><h4>{element.region}</h4></div>) : ""}
             </div>
         </div>
         
