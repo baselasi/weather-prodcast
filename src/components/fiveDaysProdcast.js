@@ -6,6 +6,9 @@ export default function Prodcast(props){
         return str.slice(0,10)
         
     }
+    function toHour(string){
+        return string.slice(10,16)
+    }
     function todate(str){
         return new Date(str)
     }
@@ -43,16 +46,15 @@ export default function Prodcast(props){
         }
         return Math.trunc((average/j))
     }
-
-
     class day {
-        constructor (name,highesttemp,lowesttemp,humidity,url,weather){
+        constructor (name,highesttemp,lowesttemp,humidity,url,weather,prodcast){
             this.name = name;
             this.highesttemp = highesttemp;
             this.lowesttemp = lowesttemp;
             this.humidity = humidity
             this.icon = url
             this.weather= weather
+            this.prodcast= prodcast
         }
     }
     let daysArr=[]
@@ -60,7 +62,10 @@ export default function Prodcast(props){
         for (let i=0 ; i<40;){
             for (let j=i; j<40;j++){
                 if( todate(cutString(props.prodcast[i].dt_txt)) < todate(cutString(props.prodcast[j].dt_txt))){
-                    
+                    let prodcas =[]
+                    for(let i=j ; i<j+8 ; i++){
+                        prodcas.push(props.prodcast[i])
+                    }
                     let lowtemp=lowestTemp(props.prodcast,j,j+8)
                     let hightemp=highestTemp(props.prodcast,j,j+8)
                     let humidity=averageHumidity(props.prodcast,j,j+8)
@@ -70,10 +75,10 @@ export default function Prodcast(props){
                         lowtemp,
                         humidity,
                         `https://openweathermap.org/img/wn/${props.prodcast[j].weather[0].icon}@2x.png`,
-                        props.prodcast[j].weather[0].main
+                        props.prodcast[j].weather[0].main,
+                        prodcas
                         ) ;
                     daysArr.push(weekday)
-                    //setDays((prev)=>[...prev,weekday])
                     i=j
                 }
             }
@@ -92,19 +97,28 @@ export default function Prodcast(props){
     return (
         <div>
             <div>
-                <span>{props.city[0]}</span>
-                <span>{newDay.name}</span>
-                <span>{newDay.highesttemp}</span>
-                <span>{newDay.lowesttemp}</span>
-                <span>{newDay.humidity}</span>
-                <span>{newDay.weather}</span>
+                <div>
+                    <h1>{props.city[0]}</h1>
+                    <h2>{newDay.name}</h2>
+                    <h2>{newDay.weather}</h2>
+                </div>
+                <div>
+                    <h4>{newDay.highesttemp}</h4>
+                    <h4>{newDay.lowesttemp}</h4>
+                    <h4>{newDay.humidity}</h4>
+                </div>
+            </div>
+            <div>
+                {newDay.prodcast.map((hour)=><div>
+                    <h3>{toHour(hour.dt_txt)}</h3>
+                    <h4>{hour.weather[0].main}</h4>
+                    <h4>{Math.trunc(hour.main.temp-273.5)}</h4>
+                </div>)}
             </div>
             <div >
                 {daysArr.map((el)=><div onClick={()=>changeDay(el)}>
                     <span>{el.name}</span>
-                    < span>{el.highesttemp}</span>
-                    <span>{el.lowesttemp}</span>
-                    <span>{el.humidity}</span>
+                    < span>{el.weather}</span>
                 </div>)}
             </div>
         </div>
