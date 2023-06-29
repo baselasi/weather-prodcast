@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 export default function Prodcast(props){
-    const [newDay,setNewDay] = useState([])
+    const [newDay,setNewDay] = useState()
     const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     function cutString(str){
         return str.slice(0,10)
@@ -74,7 +74,7 @@ export default function Prodcast(props){
                         hightemp,
                         lowtemp,
                         humidity,
-                        `https://openweathermap.org/img/wn/${props.prodcast[j].weather[0].icon}@2x.png`,
+                        `/imgs/${props.prodcast[j].weather[0].main}.jpg`,
                         props.prodcast[j].weather[0].main,
                         prodcas
                         ) ;
@@ -94,29 +94,32 @@ export default function Prodcast(props){
         setNewDay(obj)
     }
    console.log(daysArr)
+   if(newDay !==undefined){
     return (
-        <div>
-            <div>
-                <div>
+        <div style={{backgroundImage: `url(${newDay.icon})`}} className="h-100 d-flex flex-column align-content-center w-100 flex-wrap">
+            <div className="d-flex w-50  align-content-center flex-wrap">
+                <div className="weather w-100">
                     <h1>{props.city[0]}</h1>
                     <h2>{newDay.name}</h2>
                     <h2>{newDay.weather}</h2>
                 </div>
-                <div>
-                    <h4>{newDay.highesttemp}</h4>
-                    <h4>{newDay.lowesttemp}</h4>
-                    <h4>{newDay.humidity}</h4>
+                <div className="w-100 d-flex  justify-content-between flex-row">
+                    <h4 className="w-25">max {newDay.highesttemp}&deg;</h4>
+                    <h4 className="w-25 align-self-end">min {newDay.lowesttemp}&deg;</h4>
+                    <h4>{/*newDay.prodcast*/}</h4>
                 </div>
             </div>
-            <div>
-                {newDay.prodcast.map((hour)=><div>
-                    <h3>{toHour(hour.dt_txt)}</h3>
-                    <h4>{hour.weather[0].main}</h4>
-                    <h4>{Math.trunc(hour.main.temp-273.5)}</h4>
-                </div>)}
+            <div className="w-50 h-50 d-flex justify-content-between">
+                {newDay.prodcast.map((hour)=><div className="hour d-flex flex-row justify-content-between ">
+                        <div className="">
+                            <span>{Math.trunc(hour.main.temp-273.5)}&deg;</span>
+                            <img src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`} alt="icon" className="h-100" />
+                        </div>
+                        <span className="pt-2">{toHour(hour.dt_txt)}</span>
+                    </div>) }
             </div>
             <div >
-                {daysArr.map((el)=><div onClick={()=>changeDay(el)}>
+                { daysArr.map((el)=><div onClick={()=>changeDay(el)}>
                     <span>{el.name}</span>
                     < span>{el.weather}</span>
                 </div>)}
@@ -125,3 +128,5 @@ export default function Prodcast(props){
         
     )
 }
+   }
+    
