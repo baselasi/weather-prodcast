@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.css';
+import './search.css'
 const url = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities';
 const options = {
 	method: 'GET',
@@ -17,7 +19,6 @@ export default function SerchBar(props){
                 .then(response => response.json())
                 .then(response => setResult(response))
                 .catch ( err => console.error(err));
-                
     }
     const navigate = useNavigate()
     function changeRoute(el){
@@ -25,15 +26,21 @@ export default function SerchBar(props){
         props.setCity([el.city,el.latitude,el.longitude])
     }
     return(
-        <div>
-            <div>
-                <input type="text" name="serch" ref={input} placeholder="serch city" />
-                <button onClick={SerchCity}>SERCH</button>
+        <div className="backround">
+             <div className="container input-continer">
+            <div className="form-group container search-continer">
+                <input type="text" name="search" ref={input} placeholder="search city" className="form-control" />
+                <button onClick={SerchCity} className="btn btn-primary">SEARCH</button>
             </div>
-            <div>
-                {result !==undefined ? result.data.map((element)=><div key={element.id} onClick={()=>changeRoute(element)}><h2>{element.city}</h2><h3>{element.country}</h3><h4>{element.region}</h4></div>) : ""}
+            <div className="container resault-container">
+                {result !==undefined ? result.data.map((element)=>
+                <div key={element.id} onClick={()=>changeRoute(element)} className=" p-3 my-3 border reasult">
+                        <h2 className="">{element.city}</h2>
+                        <h3>{element.country}</h3>
+                </div>) : ""}
             </div>
         </div>
-        
+        </div>
+       
     )
 }
