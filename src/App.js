@@ -28,7 +28,7 @@ function App() {
         >
         
         </Route>
-        <Route path='/weatherProdcas/fiveDaysProdcast'
+        <Route path='/fiveDaysProdcast'
         element={<Prodcast
         prodcast={prodcast}
         city={cordination}
