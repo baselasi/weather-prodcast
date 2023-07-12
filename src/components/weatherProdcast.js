@@ -2,15 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
 import './weatherProdcast.css'
-
-
 export default function Weather(props){
     const [prodcast, setProdcast] = useState([]);
-    function toCelsius(temp){
+    function toCelsius(temp){               //transfer temperture to celcius
         return  Math.trunc(temp-273.5)
     }
     const ProdcastApi=`https://api.openweathermap.org/data/2.5/forecast?lat=${props.city[1]}&lon=${props.city[2]}&appid=7c47bc055a3d35204ebb00585919b3a3`
-    useEffect(()=>{
+    useEffect(()=>{                       //fetch data evry time i cahnge the city 
         function fetchProdcast(){
             fetch(ProdcastApi)
                 .then(response => response.json())
@@ -19,7 +17,7 @@ export default function Weather(props){
         }
         fetchProdcast()
     },[props.city])
-    function toHour(string){
+    function toHour(string){          
         return string.slice(10,16)
     }
     const navigate = useNavigate()
@@ -27,8 +25,8 @@ export default function Weather(props){
         navigate('/fiveDaysProdcast')
         props.Prodcast(prodcast.list)
     }
-    if(prodcast.list !==undefined){
-        let firstDayWeather = prodcast.list.slice(0,8)
+    if(prodcast.list !==undefined){    
+        let firstDayWeather = prodcast.list.slice(0,8)   //create an array with the next 24 hour prodacast (each array item contien 3 hour prodacast)
         console.log(firstDayWeather)
         console.log(prodcast.list)
         console.log(firstDayWeather[0].weather[0].description)
