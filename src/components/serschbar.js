@@ -13,7 +13,7 @@ const options = {
 export default function SerchBar(props){
     const [result,setResult] = useState()
     const input = useRef()
-    function SerchCity(e){
+    function SearchCity(e){
             e=input.current.value
             fetch(`${url}?namePrefix=${e}`, options)
                 .then(response => response.json())
@@ -30,7 +30,7 @@ export default function SerchBar(props){
              <div className="container input-continer">
             <div className="form-group container search-continer">
                 <input type="text" name="search" ref={input} placeholder="search city" className="form-control" />
-                <button onClick={SerchCity} className="btn btn-primary">SEARCH</button>
+                <button onClick={SearchCity} className="btn btn-primary">SEARCH</button>
             </div>
             <div className="container resault-container">
                 {result !==undefined ? result.data.map((element)=>
