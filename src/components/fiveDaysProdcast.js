@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
 export default function Prodcast(props){
     const [newDay,setNewDay] = useState()
-    const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    function cutString(str){
+    const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];      
+    function cutString(str){   //use it to cut the first 10 caracter of the object's date string (the first 10 carcater contiene the date without hour)
         return str.slice(0,10)
-        
     }
     function toHour(string){
         return string.slice(10,16)
     }
-    function todate(str){
+    function todate(str){ //transfer the string that contiene the day date to a DATE so i can compere it other dates
         return new Date(str)
     }
-    
-    function lowestTemp(arr,start,end){
+    function lowestTemp(arr,start,end){    //search for the lowest temperture of the day
         let lowtemp=arr[start].main.temp
         for(let i=start; i<end;i++){
             if(i<arr.length){
@@ -24,7 +22,7 @@ export default function Prodcast(props){
         }
         return  Math.trunc(lowtemp-273.5)
     }
-    function highestTemp(arr,start,end){
+    function highestTemp(arr,start,end){  //search for the highest temperture of the day
         let hightemp=arr[start].main.temp
         for(let i=start; i<end;i++){
             if(i<arr.length){
@@ -35,7 +33,7 @@ export default function Prodcast(props){
         }
         return  Math.trunc(hightemp-273.5)
     }
-    function  averageHumidity(arr,start,end){
+    function  averageHumidity(arr,start,end){  //calculate the averge humidity of the day
         let average=0
         let j=0
         for(let i=start; i<end;i++){
@@ -46,7 +44,7 @@ export default function Prodcast(props){
         }
         return Math.trunc((average/j))
     }
-    class day {
+    class day {         //a class to create a object for each day that contiene the main informations
         constructor (name,highesttemp,lowesttemp,humidity,url,weather,prodcast){
             this.name = name;
             this.highesttemp = highesttemp;
@@ -61,9 +59,9 @@ export default function Prodcast(props){
     if(props.prodcast.length!==0){
         for (let i=0 ; i<40;){
             for (let j=i; j<40;j++){
-                if( todate(cutString(props.prodcast[i].dt_txt)) < todate(cutString(props.prodcast[j].dt_txt))){
-                    let prodcas =[]
-                    for(let i=j ; i<j+8 ; i++){
+                if( todate(cutString(props.prodcast[i].dt_txt)) < todate(cutString(props.prodcast[j].dt_txt))){     
+                    let prodcas =[]                        //array that contiene the drodcast of the next 5 days
+                    for(let i=j ; i<j+8 ; i++){             
                         prodcas.push(props.prodcast[i])
                     }
                     let lowtemp=lowestTemp(props.prodcast,j,j+8)
@@ -85,7 +83,7 @@ export default function Prodcast(props){
             i++
         }
     }
-    useEffect((()=>{
+    useEffect((()=>{    
         setNewDay(daysArr[0])
         console.log(newDay)
     }
@@ -96,37 +94,37 @@ export default function Prodcast(props){
    console.log(daysArr)
    if(newDay !==undefined){
     return (
-        <div style={{backgroundImage: `url(${newDay.icon})`}} className="h-100 d-flex flex-column align-content-center w-100 flex-wrap">
-            <div className="d-flex w-50  align-content-center flex-wrap">
-                <div className="weather w-100">
-                    <h1>{props.city[0]}</h1>
-                    <h2>{newDay.name}</h2>
-                    <h2>{newDay.weather}</h2>
+        <div className="main flex-column align-content-center h-100" style={{backgroundImage: `url(${newDay.icon})`}} >
+            <div className="container h-75 flex-column align-content-center " style={{backdropFilter:" blur(8px)"}}>
+                <div className="row container h-25 fst-italic" >
+                    <div className="col-12 row w-100 h-75">
+                        <h1 className="col-12 h-25 text-center">{props.city[0]}</h1>
+                        <h2 className="col-12 h-25 text-center">{newDay.name}</h2>
+                        <div  className="col-12 h-50 text-center" ><img className="h-100"  src={`https://openweathermap.org/img/wn/${newDay.prodcast[0].weather[0].icon}@2x.png`} alt="icon"  /></div>
+                    </div>
+                    <div className=" row w-100" style={{marginRight:'-15px'}}>
+                        <h4 className=" col-sm-6  text-center">max {newDay.highesttemp}&deg;</h4>
+                        <h4 className="col-sm-6  mr-0 text-center">min {newDay.lowesttemp}&deg;</h4>
+                    </div>
                 </div>
-                <div className="w-100 d-flex  justify-content-between flex-row">
-                    <h4 className="w-25">max {newDay.highesttemp}&deg;</h4>
-                    <h4 className="w-25 align-self-end">min {newDay.lowesttemp}&deg;</h4>
-                    <h4>{/*newDay.prodcast*/}</h4>
+                <div className="row h-50 w-90 " style={{backdropFilter:" blur(8px)"}}>
+                    {newDay.prodcast.map((hour)=><div className="col-12 row hour ">
+                            <div className="pt-2 col-2 h-100  row">
+                                <span className="col-6">{Math.trunc(hour.main.temp-273.5)}&deg;</span>
+                                <div className="col-6 h-100"><img  src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`} alt="icon" className="h-100"/></div>
+                            </div>
+                            <span className="pt-2 col-10 text-end">{toHour(hour.dt_txt)}</span>
+                        </div>) }
                 </div>
-            </div>
-            <div className="w-50 h-50 d-flex justify-content-between">
-                {newDay.prodcast.map((hour)=><div className="hour d-flex flex-row justify-content-between ">
-                        <div className="">
-                            <span>{Math.trunc(hour.main.temp-273.5)}&deg;</span>
-                            <img src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`} alt="icon" className="h-100" />
-                        </div>
-                        <span className="pt-2">{toHour(hour.dt_txt)}</span>
-                    </div>) }
-            </div>
-            <div >
-                { daysArr.map((el)=><div onClick={()=>changeDay(el)}>
-                    <span>{el.name}</span>
-                    < span>{el.weather}</span>
-                </div>)}
+                <div >
+                    { daysArr.map((el)=><div onClick={()=>changeDay(el)}>
+                        <span>{el.name}</span>
+                        < span>{el.weather}</span>
+                    </div>)}
+                </div>
             </div>
         </div>
-        
     )
+    }
 }
-   }
     
